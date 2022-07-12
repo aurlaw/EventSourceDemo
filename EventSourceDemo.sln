@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourceDemo", "src\EventSourceDemo\EventSourceDemo.csproj", "{6688085E-CC65-4082-8954-14A3653ED154}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6688085E-CC65-4082-8954-14A3653ED154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6688085E-CC65-4082-8954-14A3653ED154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6688085E-CC65-4082-8954-14A3653ED154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6688085E-CC65-4082-8954-14A3653ED154}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
