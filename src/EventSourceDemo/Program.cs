@@ -1,12 +1,15 @@
 using System.Text.Json.Serialization;
 using EventSourceDemo.Common;
 using EventSourceDemo.Framework;
+using EventSourceDemo.Framework.Respository;
+using EventSourceDemo.HostedServices;
 using EventStore.Client;
-using EventStore.ClientAPI;
+// using EventStore.ClientAPI;
 using MediatR;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http.Json;
 using Serilog;
+using StackExchange.Redis;
 using MvcJsonOptions = Microsoft.AspNetCore.Mvc.JsonOptions;
 
 
@@ -24,23 +27,22 @@ try
         .WriteTo.Console()
         .ReadFrom.Configuration(ctx.Configuration));    
     
-
-    // var eventStoreConnection = EventStoreConnection.Create(
-    //     connectionString: builder.Configuration.GetValue<string>("EventStore:ConnectionString"),
-    //     builder: ConnectionSettings.Create().KeepReconnecting(),
-    //     connectionName: builder.Configuration.GetValue<string>("EventStore:ConnectionName"));
-    //
-    // eventStoreConnection.ConnectAsync().GetAwaiter().GetResult();
-    //
-    // builder.Services.AddSingleton(eventStoreConnection);
+    // Event Store connection
     var settings = EventStoreClientSettings
         .Create(builder.Configuration.GetValue<string>("EventStore:ConnectionString"));
     var client = new EventStoreClient(settings);
-
     builder.Services.AddSingleton(client);
     
+    // Redis connection
+    var redisMultiplexer =
+        ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis:ConnectionString"));
+    builder.Services.AddSingleton<IConnectionMultiplexer>(redisMultiplexer);
+    
     builder.Services.AddTransient<AggregateRepository>();
+    builder.Services.AddTransient<CheckpointRepository>();
+    builder.Services.AddTransient<TaskRepository>();
 
+    builder.Services.AddHostedService<TaskHostedService>();
     builder.Services.Configure<JsonOptions>(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     builder.Services.Configure<MvcJsonOptions>(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     builder.Services.AddEndpointsApiExplorer();
@@ -55,7 +57,6 @@ try
 
     var app = builder.Build();
 
-// configure
     app.UseSwagger();
     app.UseSwaggerUI(c => {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Event Source Demo API V1");

@@ -33,18 +33,9 @@ public class AggregateRepository
 
         var streamName = GetStreamName(aggregate, aggregate.Id);
 
-        // _ = await _eventStore.AppendToStreamAsync(streamName, ExpectedVersion.Any, events);
         await _client.AppendToStreamAsync(streamName, StreamState.Any, events);
     }    
-    /*
-     *		await client.AppendToStreamAsync(
-				"no-stream-stream",
-				StreamState.NoStream,
-				new List<EventData> {
-					eventDataOne
-				});
-     * 
-     */
+
     
     public async Task<T> LoadAsync<T>(Guid aggregateId, CancellationToken cancellationToken) where T : Aggregate, new()
     {

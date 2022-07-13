@@ -63,7 +63,7 @@ public class TaskEndpoints : IEndpointDefinition
             .WithName("CompleteTask").WithTags("TasksAPI");
         
         
-        app.MapGet("/api/tasks", (ISender mediator,  CancellationToken cancellationToken ) => Results.NoContent())
+        app.MapGet("/api/tasks/{id:guid}", (Guid id, ISender mediator,  CancellationToken cancellationToken ) => Results.NoContent())
             .Produces((int)HttpStatusCode.NoContent)
             .WithName("GetTasks").WithTags("TasksAPI");
 
